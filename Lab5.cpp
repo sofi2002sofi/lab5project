@@ -1,120 +1,119 @@
 ﻿#include <iostream>
 #include <stdio.h>
+
+const int matrix_size = 5;
 class ArrayColumn
 {
-	friend void sort_Matrix(ArrayColumn matrix[]);
-	friend void input_Matrix(ArrayColumn matrix[]);
-	friend void output_Matrix(ArrayColumn matrix[]);
-	friend void Main_Function(ArrayColumn matrix[]);
+	friend void sort_matrix(ArrayColumn matrix[]);
+	friend void input_matrix(ArrayColumn matrix[]);
+	friend void output_matrix(ArrayColumn matrix[]);
+	friend void main_function(ArrayColumn matrix[]);
 
 private:
-	int column[5];
+	int column[matrix_size];
 
 public:
-	void merge(int* A, int left, int middle, int right)
+	void merge(int* array, int first_element, int middle_element, int last_element)
 	{
-		int i = left, j = middle + 1, k = 0;
-		int T[right - left + 1];
-		while (i <= middle && j <= right)
+		int begin_of_left_part = first_element, begin_of_right_part = middle_element + 1, index_of_extra_array = 0;
+		int extra_array[last_element - first_element + 1];
+		while (begin_of_left_part <= middle_element && begin_of_right_part <= last_element)
 		{
-			if (A[i] < A[j])
+			if (array[begin_of_left_part] < array[begin_of_right_part])
 			{
-				T[k] = A[i];
-				i++;
+				extra_array[index_of_extra_array] = array[begin_of_left_part];
+				begin_of_left_part++;
 			}
 			else
 			{
-				T[k] = A[j];
-				j++;
+				extra_array[index_of_extra_array] = array[begin_of_right_part];
+				begin_of_right_part++;
 			}
-			k++;
+			index_of_extra_array++;
 		}
-		while (i <= middle)
+		while (begin_of_left_part <= middle_element)
 		{
-			T[k] = A[i];
-			k++;
-			i++;
+			extra_array[index_of_extra_array] = array[begin_of_left_part];
+			index_of_extra_array++;
+			begin_of_left_part++;
 		}
-		while (j <= right)
+		while (begin_of_right_part <= last_element)
 		{
-			T[k] = A[j];
-			k++;
-			j++;
+			extra_array[index_of_extra_array] = array[begin_of_right_part];
+			index_of_extra_array++;
+			begin_of_right_part++;
 		}
-		for (i = left; i <= right; i++)
-			A[i] = T[i - left];
+		for (begin_of_left_part = first_element; begin_of_left_part <= last_element; begin_of_left_part++)
+			array[index_of_matrix_value] = extra_array[index_of_matrix_value - first_element];
 	}
-	void sort_merge(int* A, int left, int right)
+	void sort_merge_in_rows_increase(int* array, int first_element, int last_element)
 	{
-		/* for (int i = left; i < right; i++)
-		std::cout << A[i] << '\t';
-	std::cout << std::endl;*/
-		int middle = (left + right) / 2;
-		if ((right - left) > 0)
+		int middle_element = (first_element + last_element) / 2;
+		if ((last_element - first_element) > 0)
 		{
-			sort_merge(A, left, middle);
-			sort_merge(A, middle + 1, right);
+			sort_merge(array, first_element, middle_element);
+			sort_merge(array, middle_element + 1, last_element);
 		}
-		merge(A, left, middle, right);
+		merge_in_rows_increase(array, first_element, middle_element, last_element);
 	}
 };
-void input_Matrix(ArrayColumn matrix[])
+void input_matrix(ArrayColumn matrix[])
 {
 	std::cout << "Please enter your matrix" << std::endl;
-	for (int i = 0; i < 5; i++)
+	for (int row_position = 0; row_position < matrix_size; row_position++)
 	{
-		for (int j = 0; j < 5; j++)
+		for (int column_position = 0; column_position < matrix_size; column_position++)
 		{
-			std::cout << "a[" << i << "][" << j << "]" << std::endl;
-			std::cin >> matrix[i].column[j];
+			std::cout << "a[" << row_position << "][" << column_position << "]" << std::endl;
+			std::cin >> matrix[row_position].column[column_position];
 		}
 	}
 }
-void output_Matrix(ArrayColumn matrix[])
+void output_matrix(ArrayColumn matrix[])
 {
 	std::cout << "Here is the matrix" << std::endl;
-	for (int i = 0; i < 5; i++)
+	for (int row_position = 0; row_position < matrix_size; row_position++)
 	{
-		for (int j = 0; j < 5; j++)
+		for (int column_position = 0; column_position < matrix_size; column_position++)
 		{
-			std::cout << matrix[i].column[j] << '\t';
+			std::cout << matrix[row_position].column[column_position] << '\t';
 		}
 		std::cout << std::endl;
 	}
 }
 
-void sort_Matrix(ArrayColumn matrix[])
+void sort_matrix(ArrayColumn matrix[])
 {
-	for (int i = 0; i < 5; i++)
+	for (int row_position = 0; row_position < matrix_size; row_position++)
 	{
-		matrix[i].sort_merge(matrix[i].column, 0, 4);
+		matrix[row_position].sort_merge(matrix[row_position].column, 0, matrix_size - 1);
 	}
 }
-void Main_Function(ArrayColumn matrix[])
+void main_function(ArrayColumn matrix[])
 {
-	int min, product = 1;
-	for (int j = 0; j < 5; j++)
+	int minimum_value_in_column, product_of_minimum_value_in_column = 1;
+	for (int column_position = 0; column_position < matrix_size; column_position++)
 	{
-		min = matrix[0].column[j];
-		for (int i = 0; i < 5; i++)
+		minimum_value_in_column = matrix[0].column[column_position];
+		for (int row_position = 0; row_position < matrix_size; row_position++)
 		{
-			if ((matrix[i].column[j]) <= min)
+			if ((matrix[row_position].column[column_position]) <= minimum_value_in_column)
 			{
-				min = matrix[i].column[j];
+				minimum_value_in_column = matrix[row_position].column[column_position];
 			}
 		}
-		product *= min;
-		std::cout << "the minimum " << j << "=" << min << std::endl;
+		product_of_minimum_value_in_column *= minimum_value_in_column;
+		std::cout << "the minimum " << column_position << "=" << minimum_value_in_column << std::endl;
 	}
-	std::cout << "product of minimums =" << product << std::endl;
+	std::cout << "product of minimums of each column =" << product_of_minimum_value_in_column << std::endl;
 }
 int main()
 {
-	ArrayColumn matrix[5];
-	input_Matrix(matrix);
-	output_Matrix(matrix);
-	sort_Matrix(matrix);
-	output_Matrix(matrix);
-	Main_Function(matrix);
+	ArrayColumn matrix[matrix_size];
+	input_matrix(matrix);
+	output_matrix(matrix);
+	sort_matrix(matrix);
+	output_matrix(matrix);
+	main_function(matrix);
 	return 0;
 }
